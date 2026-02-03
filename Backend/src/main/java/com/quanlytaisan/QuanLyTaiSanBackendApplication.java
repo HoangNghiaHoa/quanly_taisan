@@ -1,4 +1,4 @@
-package com.urlshortener.quan_ly_tai_san_backend;
+package com.quanlytaisan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
