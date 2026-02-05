@@ -68,7 +68,12 @@ public class AssetServiceImpl implements  AssetService {
          Asset savedAsset = assetRepository.save(updateData);
         return assetMapper.toDTO(savedAsset);
      }
-
+//Search Assets + paging
+     @Override
+     public Page<AssetDTO> searchAssets(String keyword, Pageable pageable) {
+         return assetRepository.searchAssets(keyword, pageable)
+                 .map(assetMapper::toDTO);
+     }
 //Delete Asset
      @Override
      public void deleteAsset(Long id) {

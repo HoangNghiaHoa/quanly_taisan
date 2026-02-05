@@ -35,6 +35,13 @@ public class AssetController {
             @org.springdoc.core.annotations.ParameterObject Pageable pageable ){
         return assetService.getAllAsset(pageable);
     }
+//Search asset + paging
+    @Operation(summary = "Tìm kiếm tài sản", description = "Tìm kiếm theo tên hoặc số serial, có phân trang")
+    @GetMapping("/seach")
+    public Page<AssetDTO> search( @RequestParam String keyword,
+                                  @org.springdoc.core.annotations.ParameterObject Pageable pageable){
+            return assetService.searchAssets(keyword,pageable);
+    }
 //Delete Asset by Id
     @Operation(summary = "Xóa tài sản theo ID")
     @DeleteMapping("{id}")
@@ -47,4 +54,5 @@ public class AssetController {
     public AssetDTO updateAsset(@PathVariable Long id, @RequestBody AssetDTO assetDTO){
         return assetService.updateAsset(id, assetDTO);
     }
+
 }
