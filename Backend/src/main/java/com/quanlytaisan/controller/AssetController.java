@@ -5,7 +5,12 @@ import com.quanlytaisan.service.AssetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,10 +28,12 @@ public class AssetController {
         return assetService.createAsset(assetDTO);
     }
 //Get AllAsset
-    @Operation(summary = "Lấy danh sách tất cả tài sản", description = "Trả về danh sách tài sản kèm tên phòng ban quản lý")
+    @Operation(summary = "Lấy danh sách tài sản (Có phân trang & sắp xếp)")
     @GetMapping
-    public List<AssetDTO> getAllAsset(){
-        return assetService.getAllAsset();
+    public Page<AssetDTO> getAllAsset(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC)
+            @org.springdoc.core.annotations.ParameterObject Pageable pageable ){
+        return assetService.getAllAsset(pageable);
     }
 //Delete Asset by Id
     @Operation(summary = "Xóa tài sản theo ID")
@@ -34,7 +41,7 @@ public class AssetController {
     public void deleteAsset(@PathVariable Long id){
         assetService.deleteAsset(id);
     }
-//Update Asset by Id
+//Update Asset by ID
     @Operation(summary = "Cập nhật tài sản", description = "Truyền ID trên đường dẫn và dữ liệu mới trong Body")
     @PutMapping("{id}")
     public AssetDTO updateAsset(@PathVariable Long id, @RequestBody AssetDTO assetDTO){

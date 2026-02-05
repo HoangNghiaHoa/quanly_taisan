@@ -6,6 +6,8 @@ package com.quanlytaisan.service;
  import com.quanlytaisan.mapper.AssetMapper;
  import com.quanlytaisan.repository.DepartmentRepository;
  import lombok.RequiredArgsConstructor;
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
  import org.springframework.stereotype.Service;
 
  import java.util.List;
@@ -20,12 +22,11 @@ public class AssetServiceImpl implements  AssetService {
      private final DepartmentRepository departmentRepository;
 
 //Show all Asset
+
      @Override
-     public List<AssetDTO> getAllAsset() {
-         // Take all from DB -> to DTO by Mapper -> return list
-         return assetRepository.findAll().stream()
-                 .map(assetMapper ::toDTO)
-                 .collect(Collectors.toList());
+     public Page<AssetDTO> getAllAsset(Pageable pageable) {
+         return assetRepository.findAllWithDepartment(pageable)
+                 .map(assetMapper::toDTO);
      }
 //Add a Asset
      @Override
