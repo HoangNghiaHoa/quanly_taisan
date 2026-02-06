@@ -10,4 +10,5 @@ public interface AssetService {
     void deleteAsset(Long id);
     AssetDTO updateAsset(Long id, AssetDTO assetDTO);
     Page<AssetDTO> searchAssets(String keyword, Pageable pageable);
+    List<AssetDTO> getAllAssetList();
 }

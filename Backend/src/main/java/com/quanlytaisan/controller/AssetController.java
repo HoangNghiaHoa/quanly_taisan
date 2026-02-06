@@ -1,17 +1,24 @@
 package com.quanlytaisan.controller;
 
 import com.quanlytaisan.dto.AssetDTO;
+import com.quanlytaisan.helper.AssetExcelHelper;
 import com.quanlytaisan.service.AssetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @RestController
@@ -24,7 +31,7 @@ public class AssetController {
 //Create Asset
     @Operation(summary = "Thêm mới một tài sản", description = "Dữ liệu gửi lên dạng JSON không bao gồm ID")
     @PostMapping
-    public AssetDTO createAsset(@RequestBody AssetDTO assetDTO){
+    public AssetDTO createAsset(@Valid @RequestBody AssetDTO assetDTO){
         return assetService.createAsset(assetDTO);
     }
 //Get AllAsset
@@ -54,5 +61,17 @@ public class AssetController {
     public AssetDTO updateAsset(@PathVariable Long id, @RequestBody AssetDTO assetDTO){
         return assetService.updateAsset(id, assetDTO);
     }
+//Export Excel
+    @Operation(summary = "Xuất danh sách tài sản ra file Excel")
+    @GetMapping("/export/excel")
+    public ResponseEntity<InputStreamResource> exportExcel() throws Exception{
+        List<AssetDTO>  assets = assetService.getAllAssetList();
+        ByteArrayInputStream  in= AssetExcelHelper.assetsToExcel(assets);
 
+        String filename= "danh_sach_tai_san.xlsx";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(in));
+    }
 }

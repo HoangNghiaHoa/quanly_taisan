@@ -18,6 +18,4 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
          "LOWER(a.name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR " +
          "LOWER(a.serialNumber) LIKE LOWER(CONCAT('%',:keyword,'%'))")
    Page<Asset> searchAssets(@Param("keyword") String keyword, Pageable pageable);
-
-
 }

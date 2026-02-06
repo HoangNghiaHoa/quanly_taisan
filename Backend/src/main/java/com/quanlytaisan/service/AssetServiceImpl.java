@@ -2,6 +2,7 @@ package com.quanlytaisan.service;
  import com.quanlytaisan.dto.AssetDTO;
  import com.quanlytaisan.entity.Asset;
  import com.quanlytaisan.entity.Department;
+ import com.quanlytaisan.exception.ResourceNotFoundException;
  import com.quanlytaisan.repository.AssetRepository;
  import com.quanlytaisan.mapper.AssetMapper;
  import com.quanlytaisan.repository.DepartmentRepository;
@@ -13,7 +14,7 @@ package com.quanlytaisan.service;
  import java.util.List;
  import java.util.stream.Collectors;
 
- @Service
+@Service
  @RequiredArgsConstructor
 public class AssetServiceImpl implements  AssetService {
 
@@ -36,7 +37,7 @@ public class AssetServiceImpl implements  AssetService {
          //2. Handle Department
          if(assetDTO.getDepartmentName() !=null){
              Department dept = departmentRepository.findByName(assetDTO.getDepartmentName())
-                     .orElseThrow(()-> new RuntimeException("Khong tim thay phong ban:" + assetDTO.getDepartmentName()));
+                     .orElseThrow(()-> new ResourceNotFoundException("Khong tim thay phong ban:" + assetDTO.getDepartmentName()));
 
              // Gán đối tượng phòng ban thật vào Asset
              asset.setDepartment(dept);
@@ -53,7 +54,7 @@ public class AssetServiceImpl implements  AssetService {
      public AssetDTO updateAsset(Long id, AssetDTO assetDTO) {
          //1. Check Asset is existing
          Asset existingAsset = assetRepository.findById(id)
-                 .orElseThrow(() ->new RuntimeException("Not found Asset with ID:" + id));
+                 .orElseThrow(() ->new ResourceNotFoundException("Not found Asset with ID:" + id));
          //2 Use Mapper to update Data from DTO to Entity,
          // use ToEntity and set ID again  or write important fields yourself
          Asset updateData = assetMapper.toEntity(assetDTO);
@@ -61,7 +62,7 @@ public class AssetServiceImpl implements  AssetService {
          //3 Check department if FE send new department
          if(assetDTO.getDepartmentName() !=null){
              Department dept = departmentRepository.findByName(assetDTO.getDepartmentName())
-                     .orElseThrow(() ->new RuntimeException("Phòng ban không hợp lệ"));
+                     .orElseThrow(() ->new ResourceNotFoundException("Phòng ban không hợp lệ"));
              updateData.setDepartment(dept);
          }
          //4 Save in DB
@@ -74,7 +75,14 @@ public class AssetServiceImpl implements  AssetService {
          return assetRepository.searchAssets(keyword, pageable)
                  .map(assetMapper::toDTO);
      }
-//Delete Asset
+// get AllAssetList for excel
+    @Override
+    public List<AssetDTO> getAllAssetList() {
+        return assetRepository.findAll().stream()
+                .map(assetMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    //Delete Asset
      @Override
      public void deleteAsset(Long id) {
          assetRepository.deleteById(id);

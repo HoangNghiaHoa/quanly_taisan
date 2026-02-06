@@ -2,7 +2,7 @@ package com.quanlytaisan.service;
 
 import com.quanlytaisan.dto.DepartmentDTO;
 import com.quanlytaisan.repository.DepartmentRepository;
-import  org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
